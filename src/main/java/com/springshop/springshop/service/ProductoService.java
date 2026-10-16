@@ -3,6 +3,7 @@ package com.springshop.springshop.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,14 @@ public class ProductoService {
 	 */
 	public List<Producto> obtenerProductos() {
 		return List.copyOf(productos);
+	}
+
+	/**
+	 * Busca un producto del catálogo por su identificador para validar solicitudes del carrito.
+	 */
+	public Optional<Producto> buscarPorId(Long id) {
+		return productos.stream()
+				.filter(producto -> producto.getId().equals(id))
+				.findFirst();
 	}
 }

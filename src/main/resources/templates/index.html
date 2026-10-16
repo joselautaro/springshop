@@ -15,12 +15,15 @@
 		</a>
 		<nav class="main-nav" aria-label="Navegación principal">
 			<a class="nav-link active" th:href="@{/}">Catálogo</a>
+			<a class="nav-link cart-nav-link" th:href="@{/carrito}">Carrito</a>
 			<span class="nav-note">Tu próxima cosa favorita está acá.</span>
 		</nav>
 		<div class="header-label"><span class="status-dot"></span> Tienda online</div>
 	</header>
 
 	<main>
+		<div class="flash-message flash-success" th:if="${mensajeExito}" th:text="${mensajeExito}" role="status"></div>
+		<div class="flash-message flash-error" th:if="${mensajeError}" th:text="${mensajeError}" role="alert"></div>
 		<section class="hero">
 			<div class="hero-copy">
 				<p class="eyebrow"><span class="eyebrow-line"></span> OBJETOS PARA TODOS LOS DÍAS</p>
@@ -71,7 +74,12 @@
 								<span class="stock-dot" th:classappend="${producto.stock == 0 ? ' sold-out' : ''}"></span>
 								<span th:text="${producto.stock > 0 ? 'En stock · ' + producto.stock + ' unidades' : 'Sin stock'}">En stock</span>
 							</span>
-							<span class="product-arrow" aria-hidden="true">↗</span>
+							<form class="add-to-cart-form" th:action="@{/carrito/agregar}" method="post">
+								<input type="hidden" name="productoId" th:value="${producto.id}">
+								<button class="add-to-cart-button" type="submit" th:disabled="${producto.stock == 0}">
+									Agregar al carrito
+								</button>
+							</form>
 						</div>
 					</div>
 				</article>
