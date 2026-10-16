@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f7f7f2">
+	<title>SpringShop | Catálogo</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<header class="site-header">
+		<a class="brand" th:href="@{/}" aria-label="SpringShop, inicio">
+			<span class="brand-mark">S</span>
+			<span>spring<span class="brand-accent">shop</span></span>
+		</a>
+		<nav class="main-nav" aria-label="Navegación principal">
+			<a class="nav-link active" th:href="@{/}">Catálogo</a>
+			<span class="nav-note">Tu próxima cosa favorita está acá.</span>
+		</nav>
+		<div class="header-label"><span class="status-dot"></span> Tienda online</div>
+	</header>
+
+	<main>
+		<section class="hero">
+			<div class="hero-copy">
+				<p class="eyebrow"><span class="eyebrow-line"></span> OBJETOS PARA TODOS LOS DÍAS</p>
+				<h1>Pequeños hallazgos.<br><span>Grandes favoritos.</span></h1>
+				<p class="hero-description">Una selección pensada para hacer más simple, cómoda y linda tu rutina.</p>
+				<a class="hero-link" href="#catalogo">Explorar el catálogo <span aria-hidden="true">↓</span></a>
+			</div>
+			<div class="hero-art" aria-hidden="true">
+				<div class="sun-shape"></div>
+				<div class="art-card art-card-back"></div>
+				<div class="art-card art-card-front">
+					<div class="art-circle"></div>
+					<div class="art-line art-line-one"></div>
+					<div class="art-line art-line-two"></div>
+					<div class="art-line art-line-three"></div>
+					<div class="art-sticker">hecho<br>para vos</div>
+				</div>
+				<div class="art-sparkle sparkle-one">✳</div>
+				<div class="art-sparkle sparkle-two">✳</div>
+			</div>
+			<div class="hero-index"><span>01</span> / 05</div>
+		</section>
+
+		<section class="catalog-section" id="catalogo">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">SELECCIÓN SPRINGSHOP</p>
+					<h2>El catálogo <span>curado</span></h2>
+				</div>
+				<p class="product-count"><span th:text="${#lists.size(productos)}">5</span> productos para descubrir</p>
+			</div>
+
+			<div class="product-grid">
+				<article class="product-card" th:each="producto, iterStat : ${productos}">
+					<div class="product-visual" th:classappend="${'visual-' + iterStat.count}">
+						<span class="product-number" th:text="${#numbers.formatInteger(iterStat.count, 2)}">01</span>
+						<div class="product-shape" aria-hidden="true"></div>
+						<span class="visual-caption">SPRINGSHOP · SELECCIÓN</span>
+					</div>
+					<div class="product-info">
+						<div class="product-title-row">
+							<h3 th:text="${producto.nombre}">Nombre del producto</h3>
+							<span class="product-price" th:text="${'$' + #numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">$0,00</span>
+						</div>
+						<p class="product-description" th:text="${producto.descripcion}">Descripción del producto</p>
+						<div class="product-footer">
+							<span class="stock-label">
+								<span class="stock-dot" th:classappend="${producto.stock == 0 ? ' sold-out' : ''}"></span>
+								<span th:text="${producto.stock > 0 ? 'En stock · ' + producto.stock + ' unidades' : 'Sin stock'}">En stock</span>
+							</span>
+							<span class="product-arrow" aria-hidden="true">↗</span>
+						</div>
+					</div>
+				</article>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<a class="brand footer-brand" th:href="@{/}">
+			<span class="brand-mark">S</span>
+			<span>spring<span class="brand-accent">shop</span></span>
+		</a>
+		<p>Una buena elección puede cambiar tu día.</p>
+		<span class="footer-year">HECHO CON CUIDADO · 2026</span>
+	</footer>
+</body>
+</html>
