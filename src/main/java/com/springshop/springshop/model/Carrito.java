@@ -55,6 +55,17 @@ public class Carrito {
 	}
 
 	/**
+	 * Elimina del carrito la línea completa del producto, cualquiera sea su cantidad.
+	 */
+	public void eliminarProducto(Long idProducto) {
+		validarIdProducto(idProducto);
+		boolean eliminado = items.removeIf(item -> Objects.equals(item.getProducto().getId(), idProducto));
+		if (!eliminado) {
+			throw new IllegalArgumentException("El producto no está presente en el carrito");
+		}
+	}
+
+	/**
 	 * Devuelve cuántas unidades de un producto están actualmente en el carrito.
 	 */
 	public int obtenerCantidad(Long productoId) {
@@ -90,13 +101,17 @@ public class Carrito {
 	}
 
 	private ItemCarrito buscarItemRequerido(Long productoId) {
-		if (productoId == null || productoId <= 0) {
-			throw new IllegalArgumentException("El identificador del producto no es válido");
-		}
+		validarIdProducto(productoId);
 		ItemCarrito item = buscarItem(productoId);
 		if (item == null) {
 			throw new IllegalArgumentException("El producto no está presente en el carrito");
 		}
 		return item;
+	}
+
+	private void validarIdProducto(Long productoId) {
+		if (productoId == null || productoId <= 0) {
+			throw new IllegalArgumentException("El identificador del producto no es válido");
+		}
 	}
 }

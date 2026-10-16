@@ -763,6 +763,26 @@ h1 span,
 	font-size: 10px;
 }
 
+.remove-item-form {
+	margin-top: 9px;
+}
+
+.remove-item-button {
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #9b4038;
+	cursor: pointer;
+	font: inherit;
+	font-size: 10px;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.remove-item-button:hover {
+	color: #702c27;
+}
+
 .cart-quantity,
 .cart-subtotal {
 	display: flex;

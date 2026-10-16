@@ -46,6 +46,13 @@
 						<p th:text="${item.producto.descripcion}">Descripción del producto</p>
 						<span class="cart-unit-price"
 							th:text="${'$' + #numbers.formatDecimal(item.producto.precio, 1, 'COMMA', 2, 'POINT') + ' c/u'}">$0,00 c/u</span>
+						<form class="remove-item-form"
+							th:action="@{/carrito/eliminar/{id}(id=${item.producto.id})}" method="post">
+							<button class="remove-item-button" type="submit"
+								th:attr="aria-label=${'Eliminar ' + item.producto.nombre + ' del carrito'}">
+								Eliminar
+							</button>
+						</form>
 					</div>
 					<div class="cart-quantity">
 						<span class="cart-detail-label">CANTIDAD</span>

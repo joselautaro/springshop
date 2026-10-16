@@ -81,6 +81,34 @@ public class CarritoController {
 		return modificarCantidad(id, false, session, redirectAttributes);
 	}
 
+	@PostMapping("/carrito/eliminar/{id}")
+	public String eliminarProducto(@PathVariable String id, HttpSession session,
+			RedirectAttributes redirectAttributes) {
+		long idProducto;
+		try {
+			idProducto = Long.parseLong(id);
+		} catch (NumberFormatException exception) {
+			redirectAttributes.addFlashAttribute("mensajeError", "El identificador del producto no es válido.");
+			return "redirect:/carrito";
+		}
+
+		Carrito carrito = (Carrito) session.getAttribute(ATRIBUTO_CARRITO);
+		if (carrito == null) {
+			redirectAttributes.addFlashAttribute("mensajeError", "El producto no está presente en el carrito.");
+			return "redirect:/carrito";
+		}
+
+		try {
+			carrito.eliminarProducto(idProducto);
+		} catch (IllegalArgumentException exception) {
+			redirectAttributes.addFlashAttribute("mensajeError", exception.getMessage());
+			return "redirect:/carrito";
+		}
+
+		redirectAttributes.addFlashAttribute("mensajeExito", "El producto se eliminó del carrito.");
+		return "redirect:/carrito";
+	}
+
 	/**
 	 * Valida el ID y el producto contra el catálogo antes de modificar el carrito de esta sesión.
 	 */

@@ -69,6 +69,38 @@ class CarritoControllerTests {
 	}
 
 	@Test
+	void eliminarProductoQuitaSoloDelCarritoDeLaSesionActual() throws Exception {
+		MockHttpSession primeraSesion = sesionConUnProducto();
+		Carrito primerCarrito = (Carrito) primeraSesion.getAttribute("carrito");
+		primerCarrito.aumentarCantidad(1L, 12);
+
+		MockHttpSession segundaSesion = sesionConUnProducto();
+		Carrito segundoCarrito = (Carrito) segundaSesion.getAttribute("carrito");
+
+		mockMvc.perform(post("/carrito/eliminar/1").session(primeraSesion))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/carrito"))
+				.andExpect(flash().attributeExists("mensajeExito"));
+
+		assertEquals(0, primerCarrito.obtenerCantidad(1L));
+		assertEquals(1, segundoCarrito.obtenerCantidad(1L));
+		assertEquals(12, productoService.buscarPorId(1L).orElseThrow().getStock());
+	}
+
+	@Test
+	void eliminarProductoAusenteMuestraErrorSinCambiarElCarrito() throws Exception {
+		MockHttpSession session = sesionConUnProducto();
+		Carrito carrito = (Carrito) session.getAttribute("carrito");
+
+		mockMvc.perform(post("/carrito/eliminar/2").session(session))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/carrito"))
+				.andExpect(flash().attributeExists("mensajeError"));
+
+		assertEquals(1, carrito.obtenerCantidad(1L));
+	}
+
+	@Test
 	void carritoSeMantieneAisladoEntreSesionesYLaVistaSeRenderiza() throws Exception {
 		MockHttpSession primeraSesion = sesionConUnProducto();
 		MockHttpSession segundaSesion = new MockHttpSession();

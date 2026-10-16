@@ -45,6 +45,29 @@ class CarritoTests {
 		assertThrows(IllegalArgumentException.class, () -> carrito.aumentarCantidad(0L, 3));
 	}
 
+	@Test
+	void eliminarProductoQuitaLaLineaCompletaIndependientementeDeLaCantidad() {
+		Producto producto = producto(1L, 5);
+		Carrito carrito = new Carrito();
+		carrito.agregarProducto(producto);
+		carrito.aumentarCantidad(producto.getId(), producto.getStock());
+		carrito.aumentarCantidad(producto.getId(), producto.getStock());
+
+		carrito.eliminarProducto(producto.getId());
+
+		assertEquals(0, carrito.obtenerCantidad(producto.getId()));
+		assertEquals(BigDecimal.ZERO, carrito.calcularTotal());
+	}
+
+	@Test
+	void eliminarProductoRechazaIdsInvalidosYLineasAusentes() {
+		Carrito carrito = new Carrito();
+
+		assertThrows(IllegalArgumentException.class, () -> carrito.eliminarProducto(null));
+		assertThrows(IllegalArgumentException.class, () -> carrito.eliminarProducto(0L));
+		assertThrows(IllegalArgumentException.class, () -> carrito.eliminarProducto(1L));
+	}
+
 	private Producto producto(Long id, int stock) {
 		return new Producto(id, "Producto de prueba", "Descripción", new BigDecimal("12.50"), stock);
 	}
