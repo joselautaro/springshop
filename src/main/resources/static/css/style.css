@@ -771,6 +771,41 @@ h1 span,
 	font-size: 13px;
 }
 
+.cart-quantity-actions {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.cart-quantity-actions form {
+	margin: 0;
+}
+
+.quantity-button {
+	display: grid;
+	width: 25px;
+	height: 25px;
+	place-items: center;
+	border: 1px solid var(--line);
+	border-radius: 5px;
+	background: var(--white);
+	color: var(--green);
+	cursor: pointer;
+	font: inherit;
+	font-size: 16px;
+	line-height: 1;
+}
+
+.quantity-button:hover:not(:disabled) {
+	border-color: var(--green);
+	background: #edf3e9;
+}
+
+.quantity-button:disabled {
+	color: #a8ada3;
+	cursor: not-allowed;
+}
+
 .cart-detail-label {
 	color: var(--muted);
 	font-size: 8px;

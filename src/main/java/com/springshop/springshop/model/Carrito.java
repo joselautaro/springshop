@@ -27,8 +27,31 @@ public class Carrito {
 		if (item == null) {
 			items.add(new ItemCarrito(producto, 1));
 		} else {
-			item.incrementarCantidad();
+			item.incrementarCantidad(producto.getStock());
 		}
+	}
+
+	/**
+	 * Aumenta una unidad usando el stock del producto guardado en la línea.
+	 */
+	public void aumentarCantidad(Long idProducto) {
+		ItemCarrito item = buscarItemRequerido(idProducto);
+		item.incrementarCantidad(item.getProducto().getStock());
+	}
+
+	/**
+	 * Aumenta una unidad respetando el stock más reciente consultado en el catálogo.
+	 */
+	public void aumentarCantidad(Long idProducto, int stockVigente) {
+		ItemCarrito item = buscarItemRequerido(idProducto);
+		item.incrementarCantidad(stockVigente);
+	}
+
+	/**
+	 * Disminuye una unidad; la línea conserva como mínimo una unidad.
+	 */
+	public void disminuirCantidad(Long idProducto) {
+		buscarItemRequerido(idProducto).disminuirCantidad();
 	}
 
 	/**
@@ -64,5 +87,16 @@ public class Carrito {
 				.filter(item -> Objects.equals(item.getProducto().getId(), productoId))
 				.findFirst()
 				.orElse(null);
+	}
+
+	private ItemCarrito buscarItemRequerido(Long productoId) {
+		if (productoId == null || productoId <= 0) {
+			throw new IllegalArgumentException("El identificador del producto no es válido");
+		}
+		ItemCarrito item = buscarItem(productoId);
+		if (item == null) {
+			throw new IllegalArgumentException("El producto no está presente en el carrito");
+		}
+		return item;
 	}
 }

@@ -50,6 +50,18 @@
 					<div class="cart-quantity">
 						<span class="cart-detail-label">CANTIDAD</span>
 						<span th:text="${item.cantidad}">1</span>
+						<div class="cart-quantity-actions">
+							<form th:action="@{/carrito/disminuir/{id}(id=${item.producto.id})}" method="post">
+								<button class="quantity-button" type="submit"
+									th:disabled="${item.cantidad <= 1}"
+									th:attr="aria-label=${'Disminuir cantidad de ' + item.producto.nombre}">−</button>
+							</form>
+							<form th:action="@{/carrito/aumentar/{id}(id=${item.producto.id})}" method="post">
+								<button class="quantity-button" type="submit"
+									th:disabled="${item.cantidad >= item.producto.stock}"
+									th:attr="aria-label=${'Aumentar cantidad de ' + item.producto.nombre}">+</button>
+							</form>
+						</div>
 					</div>
 					<div class="cart-subtotal">
 						<span class="cart-detail-label">SUBTOTAL</span>

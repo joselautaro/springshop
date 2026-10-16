@@ -34,7 +34,23 @@ public class ItemCarrito {
 		return producto.getPrecio().multiply(BigDecimal.valueOf(cantidad));
 	}
 
-	void incrementarCantidad() {
+	/**
+	 * Incrementa la línea solo si queda stock vigente disponible para otra unidad.
+	 */
+	void incrementarCantidad(int stockVigente) {
+		if (stockVigente < 0 || cantidad >= stockVigente) {
+			throw new IllegalArgumentException("No hay stock suficiente para aumentar la cantidad");
+		}
 		cantidad++;
+	}
+
+	/**
+	 * Reduce una unidad sin permitir que la cantidad de la línea llegue a cero.
+	 */
+	void disminuirCantidad() {
+		if (cantidad <= 1) {
+			throw new IllegalArgumentException("La cantidad no puede ser menor que uno");
+		}
+		cantidad--;
 	}
 }
