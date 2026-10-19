@@ -80,6 +80,9 @@
 				<span>Total del carrito</span>
 				<strong th:text="${'$' + #numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}">$0,00</strong>
 			</aside>
+			<form th:action="@{/carrito/vaciar}" method="post">
+				<button class="cart-continue-button" type="submit">Vaciar carrito</button>
+			</form>
 			<a class="cart-continue-link" th:href="@{/}">← Seguir explorando</a>
 		</section>
 	</main>

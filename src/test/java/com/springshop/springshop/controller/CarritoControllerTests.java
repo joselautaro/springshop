@@ -1,10 +1,12 @@
 package com.springshop.springshop.controller;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -101,6 +103,27 @@ class CarritoControllerTests {
 	}
 
 	@Test
+	void vaciarCarritoAfectaSoloLaSesionActualSinModificarSesionNiStock() throws Exception {
+		MockHttpSession primeraSesion = sesionConUnProducto();
+		Carrito primerCarrito = (Carrito) primeraSesion.getAttribute("carrito");
+		MockHttpSession segundaSesion = sesionConUnProducto();
+		Carrito segundoCarrito = (Carrito) segundaSesion.getAttribute("carrito");
+		Object otroAtributoDeSesion = "sesión conservada";
+		primeraSesion.setAttribute("otroAtributo", otroAtributoDeSesion);
+		int stock = productoService.buscarPorId(1L).orElseThrow().getStock();
+
+		mockMvc.perform(post("/carrito/vaciar").session(primeraSesion))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(redirectedUrl("/carrito"))
+				.andExpect(flash().attributeExists("mensajeExito"));
+
+		assertTrue(primerCarrito.getItems().isEmpty());
+		assertEquals(1, segundoCarrito.obtenerCantidad(1L));
+		assertEquals(otroAtributoDeSesion, primeraSesion.getAttribute("otroAtributo"));
+		assertEquals(stock, productoService.buscarPorId(1L).orElseThrow().getStock());
+	}
+
+	@Test
 	void carritoSeMantieneAisladoEntreSesionesYLaVistaSeRenderiza() throws Exception {
 		MockHttpSession primeraSesion = sesionConUnProducto();
 		MockHttpSession segundaSesion = new MockHttpSession();
@@ -114,6 +137,18 @@ class CarritoControllerTests {
 
 		mockMvc.perform(get("/carrito").session(segundaSesion))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	void vistaDelCarritoRenderizaFormulariosPostParaSusAcciones() throws Exception {
+		mockMvc.perform(get("/carrito").session(sesionConUnProducto()))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("action=\"/carrito/vaciar\"")))
+				.andExpect(content().string(containsString("action=\"/carrito/eliminar/1\"")))
+				.andExpect(content().string(containsString("action=\"/carrito/disminuir/1\"")))
+				.andExpect(content().string(containsString("action=\"/carrito/aumentar/1\"")))
+				.andExpect(content().string(containsString("method=\"post\"")))
+				.andExpect(content().string(containsString("Vaciar carrito")));
 	}
 
 	private MockHttpSession sesionConUnProducto() {

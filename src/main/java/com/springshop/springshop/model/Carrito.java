@@ -66,6 +66,13 @@ public class Carrito {
 	}
 
 	/**
+	 * Elimina todas las líneas del carrito sin modificar los productos del catálogo.
+	 */
+	public void vaciar() {
+		items.clear();
+	}
+
+	/**
 	 * Devuelve cuántas unidades de un producto están actualmente en el carrito.
 	 */
 	public int obtenerCantidad(Long productoId) {

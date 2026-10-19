@@ -68,6 +68,18 @@ class CarritoTests {
 		assertThrows(IllegalArgumentException.class, () -> carrito.eliminarProducto(1L));
 	}
 
+	@Test
+	void vaciarEliminaTodasLasLineasDelCarrito() {
+		Carrito carrito = new Carrito();
+		carrito.agregarProducto(producto(1L, 5));
+		carrito.agregarProducto(producto(2L, 3));
+
+		carrito.vaciar();
+
+		assertEquals(0, carrito.getItems().size());
+		assertEquals(BigDecimal.ZERO, carrito.calcularTotal());
+	}
+
 	private Producto producto(Long id, int stock) {
 		return new Producto(id, "Producto de prueba", "Descripción", new BigDecimal("12.50"), stock);
 	}

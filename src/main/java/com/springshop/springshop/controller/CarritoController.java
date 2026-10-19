@@ -109,6 +109,14 @@ public class CarritoController {
 		return "redirect:/carrito";
 	}
 
+	@PostMapping("/carrito/vaciar")
+	public String vaciarCarrito(HttpSession session, RedirectAttributes redirectAttributes) {
+		// Solo se modifica el carrito asociado a la sesión actual; la sesión permanece intacta.
+		obtenerOCrearCarrito(session).vaciar();
+		redirectAttributes.addFlashAttribute("mensajeExito", "El carrito se vació correctamente.");
+		return "redirect:/carrito";
+	}
+
 	/**
 	 * Valida el ID y el producto contra el catálogo antes de modificar el carrito de esta sesión.
 	 */
