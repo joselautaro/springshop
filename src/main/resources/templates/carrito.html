@@ -1,99 +1,169 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="theme-color" content="#f7f7f2">
-	<title>SpringShop | Mi carrito</title>
-	<link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f7f2">
+    <title>SpringShop | Mi carrito</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-	<header class="site-header">
-		<a class="brand" th:href="@{/}" aria-label="SpringShop, inicio">
-			<span class="brand-mark">S</span>
-			<span>spring<span class="brand-accent">shop</span></span>
-		</a>
-		<nav class="main-nav" aria-label="Navegación principal">
-			<a class="nav-link" th:href="@{/}">Catálogo</a>
-			<a class="nav-link active cart-nav-link" th:href="@{/carrito}">Carrito</a>
-		</nav>
-		<div class="header-label"><span class="status-dot"></span> Tienda online</div>
-	</header>
+    <header class="site-header">
+        <a class="brand" th:href="@{/}" aria-label="SpringShop, inicio">
+            <span class="brand-mark">S</span>
+            <span>spring<span class="brand-accent">shop</span></span>
+        </a>
 
-	<main class="cart-page">
-		<div class="flash-message flash-success" th:if="${mensajeExito}" th:text="${mensajeExito}" role="status"></div>
-		<div class="flash-message flash-error" th:if="${mensajeError}" th:text="${mensajeError}" role="alert"></div>
+        <nav class="main-nav" aria-label="Navegación principal">
+            <a class="nav-link" th:href="@{/}">Catálogo</a>
+            <a class="nav-link active cart-nav-link"
+               th:href="@{/carrito}"
+               aria-current="page">
+                Carrito
+            </a>
+        </nav>
 
-		<section class="cart-heading">
-			<p class="eyebrow">TU SELECCIÓN</p>
-			<h1>Mi carrito<span>.</span></h1>
-			<p class="cart-intro">Estos son los productos que elegiste.</p>
-		</section>
+        <div class="header-label">
+            <span class="status-dot"></span>
+            Tienda online
+        </div>
+    </header>
 
-		<section class="cart-empty" th:if="${#lists.isEmpty(carrito.items)}">
-			<div class="empty-mark" aria-hidden="true">＋</div>
-			<h2>Tu carrito está esperando favoritos.</h2>
-			<p>Explorá el catálogo y agregá algo que te guste.</p>
-			<a class="cart-continue-button" th:href="@{/}">Volver al catálogo</a>
-		</section>
+    <main class="cart-page">
+        <div class="flash-message flash-success"
+             th:if="${mensajeExito}"
+             th:text="${mensajeExito}"
+             role="status">
+        </div>
 
-		<section class="cart-content" th:unless="${#lists.isEmpty(carrito.items)}">
-			<div class="cart-items">
-				<article class="cart-item" th:each="item : ${carrito.items}">
-					<div class="cart-item-mark" aria-hidden="true">S</div>
-					<div class="cart-item-description">
-						<h2 th:text="${item.producto.nombre}">Nombre del producto</h2>
-						<p th:text="${item.producto.descripcion}">Descripción del producto</p>
-						<span class="cart-unit-price"
-							th:text="${'$' + #numbers.formatDecimal(item.producto.precio, 1, 'COMMA', 2, 'POINT') + ' c/u'}">$0,00 c/u</span>
-						<form class="remove-item-form"
-							th:action="@{/carrito/eliminar/{id}(id=${item.producto.id})}" method="post">
-							<button class="remove-item-button" type="submit"
-								th:attr="aria-label=${'Eliminar ' + item.producto.nombre + ' del carrito'}">
-								Eliminar
-							</button>
-						</form>
-					</div>
-					<div class="cart-quantity">
-						<span class="cart-detail-label">CANTIDAD</span>
-						<span th:text="${item.cantidad}">1</span>
-						<div class="cart-quantity-actions">
-							<form th:action="@{/carrito/disminuir/{id}(id=${item.producto.id})}" method="post">
-								<button class="quantity-button" type="submit"
-									th:disabled="${item.cantidad <= 1}"
-									th:attr="aria-label=${'Disminuir cantidad de ' + item.producto.nombre}">−</button>
-							</form>
-							<form th:action="@{/carrito/aumentar/{id}(id=${item.producto.id})}" method="post">
-								<button class="quantity-button" type="submit"
-									th:disabled="${item.cantidad >= item.producto.stock}"
-									th:attr="aria-label=${'Aumentar cantidad de ' + item.producto.nombre}">+</button>
-							</form>
-						</div>
-					</div>
-					<div class="cart-subtotal">
-						<span class="cart-detail-label">SUBTOTAL</span>
-						<strong th:text="${'$' + #numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}">$0,00</strong>
-					</div>
-				</article>
-			</div>
-			<aside class="cart-summary">
-				<span>Total del carrito</span>
-				<strong th:text="${'$' + #numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}">$0,00</strong>
-			</aside>
-			<form th:action="@{/carrito/vaciar}" method="post">
-				<button class="cart-continue-button" type="submit">Vaciar carrito</button>
-			</form>
-			<a class="cart-continue-link" th:href="@{/}">← Seguir explorando</a>
-		</section>
-	</main>
+        <div class="flash-message flash-error"
+             th:if="${mensajeError}"
+             th:text="${mensajeError}"
+             role="alert">
+        </div>
 
-	<footer class="site-footer">
-		<a class="brand footer-brand" th:href="@{/}">
-			<span class="brand-mark">S</span>
-			<span>spring<span class="brand-accent">shop</span></span>
-		</a>
-		<p>Una buena elección puede cambiar tu día.</p>
-		<span class="footer-year">HECHO CON CUIDADO · 2026</span>
-	</footer>
+        <section class="cart-heading">
+            <p class="eyebrow">TU SELECCIÓN</p>
+            <h1>Mi carrito<span>.</span></h1>
+            <p class="cart-intro">Estos son los productos que elegiste.</p>
+        </section>
+
+        <section class="cart-empty"
+                 th:if="${#lists.isEmpty(carrito.items)}">
+            <div class="empty-mark" aria-hidden="true">＋</div>
+            <h2>Tu carrito está esperando favoritos.</h2>
+            <p>Explorá el catálogo y agregá algo que te guste.</p>
+            <a class="cart-continue-button" th:href="@{/}">
+                Volver al catálogo
+            </a>
+        </section>
+
+        <section class="cart-content"
+                 th:unless="${#lists.isEmpty(carrito.items)}">
+            <div class="cart-items">
+                <article class="cart-item" th:each="item : ${carrito.items}">
+                    <div class="cart-item-mark" aria-hidden="true">S</div>
+
+                    <div class="cart-item-description">
+                        <h2 th:text="${item.producto.nombre}">
+                            Nombre del producto
+                        </h2>
+
+                        <p th:text="${item.producto.descripcion}">
+                            Descripción del producto
+                        </p>
+
+                        <span class="cart-unit-price"
+                              th:text="${'$' + #numbers.formatDecimal(item.producto.precio, 1, 'COMMA', 2, 'POINT') + ' c/u'}">
+                            $0,00 c/u
+                        </span>
+
+                        <form class="remove-item-form"
+                              th:action="@{/carrito/eliminar/{id}(id=${item.producto.id})}"
+                              method="post">
+                            <button class="remove-item-button"
+                                    type="submit"
+                                    th:attr="aria-label=${'Eliminar ' + item.producto.nombre + ' del carrito'}">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="cart-quantity">
+                        <span class="cart-detail-label">CANTIDAD</span>
+                        <span th:text="${item.cantidad}">1</span>
+
+                        <div class="cart-quantity-actions">
+                            <form th:action="@{/carrito/disminuir/{id}(id=${item.producto.id})}"
+                                  method="post">
+                                <button class="quantity-button"
+                                        type="submit"
+                                        th:disabled="${item.cantidad le 1}"
+                                        th:attr="aria-label=${'Disminuir cantidad de ' + item.producto.nombre}">
+                                    −
+                                </button>
+                            </form>
+
+                            <form th:action="@{/carrito/aumentar/{id}(id=${item.producto.id})}"
+                                  method="post">
+                                <button class="quantity-button"
+                                        type="submit"
+                                        th:disabled="${item.cantidad >= item.producto.stock}"
+                                        th:attr="aria-label=${'Aumentar cantidad de ' + item.producto.nombre}">
+                                    +
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="cart-subtotal">
+                        <span class="cart-detail-label">SUBTOTAL</span>
+                        <strong th:text="${'$' + #numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}">
+                            $0,00
+                        </strong>
+                    </div>
+                </article>
+            </div>
+
+            <aside class="cart-summary">
+                <span>Total del carrito</span>
+                <strong th:text="${'$' + #numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}">
+                    $0,00
+                </strong>
+            </aside>
+
+            <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                <form th:action="@{/carrito/vaciar}"
+                      method="post"
+                      style="margin: 0;">
+                    <button class="cart-continue-button"
+                            type="submit"
+                            style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-height: 40px; margin: 0; padding: 12px 24px; font: inherit; cursor: pointer;">
+                        Vaciar carrito
+                    </button>
+                </form>
+
+                <a class="cart-continue-button"
+                   th:href="@{/checkout}"
+                   style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-height: 40px; margin: 0; padding: 12px 24px; font: inherit; text-decoration: none;">
+                    Finalizar compra
+                </a>
+            </div>
+
+            <a class="cart-continue-link" th:href="@{/}">
+                ← Seguir explorando
+            </a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <a class="brand footer-brand" th:href="@{/}">
+            <span class="brand-mark">S</span>
+            <span>spring<span class="brand-accent">shop</span></span>
+        </a>
+
+        <p>Una buena elección puede cambiar tu día.</p>
+        <span class="footer-year">HECHO CON CUIDADO · 2026</span>
+    </footer>
 </body>
 </html>

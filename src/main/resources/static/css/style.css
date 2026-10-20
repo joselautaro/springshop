@@ -892,6 +892,7 @@ h1 span,
 	letter-spacing: 1px;
 }
 
+
 @media (max-width: 800px) {
 	.site-header {
 		padding: 0 5%;

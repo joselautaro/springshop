@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f7f7f2">
+	<title>SpringShop | Finalizar compra</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<header class="site-header">
+		<a class="brand" th:href="@{/}" aria-label="SpringShop, inicio">
+			<span class="brand-mark">S</span>
+			<span>spring<span class="brand-accent">shop</span></span>
+		</a>
+		<nav class="main-nav" aria-label="Navegación principal">
+			<a class="nav-link" th:href="@{/}">Catálogo</a>
+			<a class="nav-link active cart-nav-link" th:href="@{/carrito}">Carrito</a>
+		</nav>
+		<div class="header-label"><span class="status-dot"></span> Tienda online</div>
+	</header>
+
+	<main class="cart-page">
+		<div class="flash-message flash-error" th:if="${mensajeError}" th:text="${mensajeError}" role="alert"></div>
+
+		<section class="cart-heading">
+			<p class="eyebrow">ÚLTIMO PASO</p>
+			<h1>Finalizar compra<span>.</span></h1>
+			<p class="cart-intro">Revisá los productos y completá tus datos para confirmar el pedido.</p>
+		</section>
+
+		<section class="cart-empty" th:if="${#lists.isEmpty(carrito.items)}">
+			<h2>Tu carrito está vacío.</h2>
+			<p>Agregá productos antes de finalizar la compra.</p>
+			<a class="cart-continue-button" th:href="@{/carrito}">Volver al carrito</a>
+		</section>
+
+		<section class="cart-content" th:unless="${#lists.isEmpty(carrito.items)}">
+			<div class="cart-items" aria-label="Productos de la compra">
+				<article class="cart-item" th:each="item : ${carrito.items}">
+					<div class="cart-item-mark" aria-hidden="true">S</div>
+					<div class="cart-item-description">
+						<h2 th:text="${item.producto.nombre}">Nombre del producto</h2>
+						<span class="cart-unit-price"
+							th:text="${'$' + #numbers.formatDecimal(item.producto.precio, 1, 'COMMA', 2, 'POINT') + ' c/u'}">$0,00 c/u</span>
+					</div>
+					<div class="cart-quantity">
+						<span class="cart-detail-label">CANTIDAD</span>
+						<span th:text="${item.cantidad}">1</span>
+					</div>
+					<div class="cart-subtotal">
+						<span class="cart-detail-label">SUBTOTAL</span>
+						<strong th:text="${'$' + #numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}">$0,00</strong>
+					</div>
+				</article>
+			</div>
+
+			<aside class="cart-summary">
+				<span>Total de la compra</span>
+				<strong th:text="${'$' + #numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}">$0,00</strong>
+			</aside>
+
+			<form th:action="@{/checkout/confirmar}" th:object="${checkoutForm}" method="post">
+				<input type="hidden" th:field="*{tokenCheckout}">
+
+				<div>
+					<label for="nombreCliente">Nombre completo</label>
+					<input id="nombreCliente" type="text" th:field="*{nombreCliente}" autocomplete="name" required>
+					<p th:if="${#fields.hasErrors('nombreCliente')}" th:errors="*{nombreCliente}" role="alert"></p>
+				</div>
+
+				<div>
+					<label for="emailCliente">Correo electrónico</label>
+					<input id="emailCliente" type="email" th:field="*{emailCliente}" autocomplete="email" required>
+					<p th:if="${#fields.hasErrors('emailCliente')}" th:errors="*{emailCliente}" role="alert"></p>
+				</div>
+
+				<div>
+					<label for="direccionEntrega">Dirección de compra</label>
+					<textarea id="direccionEntrega" th:field="*{direccionEntrega}" autocomplete="street-address"
+						rows="3" required></textarea>
+					<p th:if="${#fields.hasErrors('direccionEntrega')}" th:errors="*{direccionEntrega}" role="alert"></p>
+				</div>
+
+				<button class="cart-continue-button" type="submit">Confirmar pedido</button>
+			</form>
+			<a class="cart-continue-link" th:href="@{/carrito}">← Volver al carrito</a>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<a class="brand footer-brand" th:href="@{/}">
+			<span class="brand-mark">S</span>
+			<span>spring<span class="brand-accent">shop</span></span>
+		</a>
+		<p>Una buena elección puede cambiar tu día.</p>
+		<span class="footer-year">HECHO CON CUIDADO · 2026</span>
+	</footer>
+</body>
+</html>

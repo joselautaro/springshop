@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f7f7f2">
+	<title>SpringShop | Pedido confirmado</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<header class="site-header">
+		<a class="brand" th:href="@{/}" aria-label="SpringShop, inicio">
+			<span class="brand-mark">S</span>
+			<span>spring<span class="brand-accent">shop</span></span>
+		</a>
+		<nav class="main-nav" aria-label="Navegación principal">
+			<a class="nav-link" th:href="@{/}">Catálogo</a>
+			<a class="nav-link cart-nav-link" th:href="@{/carrito}">Carrito</a>
+		</nav>
+		<div class="header-label"><span class="status-dot"></span> Tienda online</div>
+	</header>
+
+	<main class="cart-page">
+		<section class="cart-heading">
+			<p class="eyebrow">COMPRA CONFIRMADA</p>
+			<h1>Gracias por tu compra<span>.</span></h1>
+			<p class="cart-intro">
+				Número de pedido: <strong th:text="${pedido.id}">1</strong> ·
+				Comprador: <strong th:text="${pedido.nombreCliente}">Nombre del cliente</strong>
+			</p>
+			<p class="cart-intro">
+				Fecha: <time th:datetime="${pedido.fecha}"
+					th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}">20/10/2026 12:00</time>
+				· Estado: <strong th:text="${pedido.estado}">CONFIRMADO</strong>
+			</p>
+		</section>
+
+		<section class="cart-content">
+			<div class="cart-items">
+				<article class="cart-item" th:each="detalle : ${pedido.detalles}">
+					<div class="cart-item-mark" aria-hidden="true">S</div>
+					<div class="cart-item-description">
+						<h2 th:text="${detalle.nombreProducto}">Nombre del producto</h2>
+						<span class="cart-unit-price"
+							th:text="${'$' + #numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT') + ' c/u'}">$0,00 c/u</span>
+					</div>
+					<div class="cart-quantity">
+						<span class="cart-detail-label">CANTIDAD</span>
+						<span th:text="${detalle.cantidad}">1</span>
+					</div>
+					<div class="cart-subtotal">
+						<span class="cart-detail-label">SUBTOTAL</span>
+						<strong th:text="${'$' + #numbers.formatDecimal(detalle.subtotal, 1, 'COMMA', 2, 'POINT')}">$0,00</strong>
+					</div>
+				</article>
+			</div>
+			<aside class="cart-summary">
+				<span>Total del pedido</span>
+				<strong th:text="${'$' + #numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}">$0,00</strong>
+			</aside>
+			<a class="cart-continue-button" th:href="@{/}">Volver a la tienda</a>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<a class="brand footer-brand" th:href="@{/}">
+			<span class="brand-mark">S</span>
+			<span>spring<span class="brand-accent">shop</span></span>
+		</a>
+		<p>Una buena elección puede cambiar tu día.</p>
+		<span class="footer-year">HECHO CON CUIDADO · 2026</span>
+	</footer>
+</body>
+</html>
